@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/home/kkcorps/Downloads/Android-002/SoundRecorder/app/build/intermediates/pre-dexed/debug/aspectjrt-1.8.2-5b7a79524b02add03270130c6b3722b65b8a1358.jar"
+        jar="/root/.gradle/caches/modules-2/files-2.1/org.aspectj/aspectjrt/1.8.2/7dede91c0c36b1265fc99c55283b90ed2be144c8/aspectjrt-1.8.2.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="7dede91c0c36b1265fc99c55283b90ed2be144c8"/>
+    <item
+        dex="/home/kkcorps/Downloads/Android-002/SoundRecorder/app/build/intermediates/pre-dexed/debug/isoparser-1.0.5.4-9d5d67cfc1252eef975af6f842c4b86d1ae757bc.jar"
+        jar="/root/.gradle/caches/modules-2/files-2.1/com.googlecode.mp4parser/isoparser/1.0.5.4/232e5130b709e6cc2ac4c4e5c5212a89929ab592/isoparser-1.0.5.4.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="232e5130b709e6cc2ac4c4e5c5212a89929ab592"/>
+
+</pre-dex-items>
