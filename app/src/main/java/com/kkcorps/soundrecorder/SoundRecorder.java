@@ -7,6 +7,7 @@ import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -55,6 +56,7 @@ public class SoundRecorder extends Activity {
     public static MediaPlayer mediaPlayer = new MediaPlayer();
     public static AudioRecord audioRecord;
     public static AudioTrack audioTrack;
+    public static long currentTime,initalTime;
     public boolean isMicrophoneActive = false, isAudioPlaying = false, isRecordingPaused = false;
     public static String DATA_PATH = "/mnt/external_sd/";
     public static String FILE_NAME = "Test.m4a";
@@ -63,9 +65,6 @@ public class SoundRecorder extends Activity {
     public static int FileDuration=0;
     public static List<Track> incompleteTracksList = new ArrayList<Track>();
     public static List<Movie> incompleteMovieList = new ArrayList<Movie>();
-    public static List<List<Track>> movieTracks = new ArrayList<List<Track>>();
-    public static int RECORDER_SAMPLERATE = 44100;
-    public static int RECORDER_BPP = 16;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +75,8 @@ public class SoundRecorder extends Activity {
         final ImageButton play_click = (ImageButton) findViewById(R.id.play_button);
         final ImageButton pause_click = (ImageButton) findViewById(R.id.pause_button);
         final Chronometer chronometerSeconds = (Chronometer) findViewById(R.id.chronometerSeconds);
+        //currentTime = SystemClock.elapsedRealtime();
+        //initalTime = currentTime;
 
         microphone_click.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,43 +85,38 @@ public class SoundRecorder extends Activity {
                 if(isMicrophoneActive){
                     //stopRecording();
                     mediaRecorder.stop();
-                    //audioRecord.stop();
-
                     chronometerSeconds.stop();
                     chronometerSeconds.setBase(SystemClock.elapsedRealtime());
                     view.setBackgroundResource(R.drawable.ic_microphone);
-
                     mediaRecorder.reset();
-                    //if(!isRecordingPaused) {
                     try {
-                            File incompleteFile = new File(DATA_PATH+FILE_NAME);
-                            //AACTrackImpl aacTrack = new AACTrackImpl(new FileDataSourceImpl(incompleteFile));
                             Movie incompleteMovie = MovieCreator.build(DATA_PATH+FILE_NAME);
-                            //AACTrackImpl aacTrack = new AACTrackImpl(new FileDataSourceImpl())
-                            //incompleteTracksList.add((Track) aacTrack);
                             incompleteMovieList.add(incompleteMovie);
                     }catch (Exception e){
                             e.printStackTrace();
                             Toast.makeText(mContext,"Recording could not be completed",Toast.LENGTH_SHORT).show();
                      }
-                    //}
-                    //appendRecordings();
-                    File outfile = new File(DATA_PATH+OUTPUT_FILE_NAME);
 
                     Mp4ParserWrapper.append(DATA_PATH+OUTPUT_FILE_NAME,DATA_PATH+FILE_NAME);
                     isMicrophoneActive = false;
+                    isRecordingPaused = false;
                     return;
                 }
-
+                if(!isRecordingPaused){
+                    File outputFile = new File(DATA_PATH+OUTPUT_FILE_NAME);
+                    if(outputFile.exists()){
+                        outputFile.delete();
+                        Log.i(TAG,"Output File Deleted");
+                    }
+                }
                 mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
                 mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
                 mediaRecorder.setAudioChannels(2);
                 mediaRecorder.setAudioEncodingBitRate(65536);
-                //mediaRecorder.setAudioSamplingRate(44100);
                 mediaRecorder.setOutputFile(DATA_PATH+FILE_NAME);
 
-                Log.i(TAG,"DATA PATH: "+DATA_PATH+FILE_NAME);
+                Log.i(TAG, "DATA PATH: " + DATA_PATH + FILE_NAME);
 
                 try {
                     mediaRecorder.prepare();
@@ -130,7 +126,6 @@ public class SoundRecorder extends Activity {
                     chronometerSeconds.start();
                     isMicrophoneActive = true;
                 }catch (Exception e){
-
                     e.printStackTrace();
                 }
             }
@@ -182,17 +177,11 @@ public class SoundRecorder extends Activity {
                 mediaRecorder.stop();
                 chronometerSeconds.stop();
                 mediaRecorder.reset();
-                try {
-                        Movie incompleteMovie = MovieCreator.build(DATA_PATH+FILE_NAME);
-                        incompleteMovieList.add(incompleteMovie);
-                    }catch (Exception e){
-                        e.printStackTrace();
-                        Toast.makeText(mContext, "Some error was encountered",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
                 isMicrophoneActive = false;
                 isRecordingPaused = true;
-                Mp4ParserWrapper.append(DATA_PATH+OUTPUT_FILE_NAME,DATA_PATH+FILE_NAME);
+                currentTime = SystemClock.elapsedRealtime();
+                microphone_click.setBackgroundResource(R.drawable.ic_microphone);
+                Mp4ParserWrapper.append(DATA_PATH + OUTPUT_FILE_NAME, DATA_PATH + FILE_NAME);
                 Toast.makeText(mContext,"Recording Paused",Toast.LENGTH_SHORT).show();
                 return;
             }
