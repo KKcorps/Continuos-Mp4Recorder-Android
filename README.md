@@ -1,0 +1,2 @@
+# Continuos-Mp4Recorder-Android
+This is a completely working sound recorder activity with pause suporrt for android devices.The activity utilised &lt;a href="https://github.com/sannies/mp4parser">MP4 Parser Project &lt;/a> and Mp4ParserHelper Class from &lt;a href="https://github.com/lassana/continuous-audiorecorder">continuous-audiorecorder project&lt;/a>.The recording is currently possible only in MPEG4 format.
